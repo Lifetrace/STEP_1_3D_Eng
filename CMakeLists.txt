@@ -3,11 +3,9 @@ cmake_minimum_required(VERSION 4.2)
 project(LoopEngine LANGUAGES C CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(LoopEngine src/main.cpp src/Window/WindowInit.cpp)
+add_executable(LoopEngine src/main.cpp src/Window/WindowInit.cpp src/Other/Debug.cpp)
 
 target_include_directories(LoopEngine PUBLIC ${CMAKE_HOME_DIRECTORY}/include)
-target_include_directories(LoopEngine PUBLIC ${CMAKE_HOME_DIRECTORY}/include/Window)
-target_include_directories(LoopEngine PUBLIC ${CMAKE_HOME_DIRECTORY}/include/Other)
 
 #target_link_libraries(LoopEngine PRIVATE ws2_32)
 

@@ -1,5 +1,24 @@
-#include "Debug.hpp"
+#include "Other/Debug.hpp"
 #include <iostream>
+
+void EnableAnsiColors() {
+#ifdef _WIN32
+  HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+  if (hOut == INVALID_HANDLE_VALUE) {
+    return;
+  }
+
+  DWORD dwMode = 0;
+
+  if (!GetConsoleMode(hOut, &dwMode)) {
+    return;
+  }
+
+  dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+  SetConsoleMode(hOut, dwMode);
+#endif
+}
 
 namespace LoopEngine {
 
@@ -17,5 +36,7 @@ void Debug::Error(std::string msg) {
   std::cerr << LOOP_COLOR_RED << "[ERROR] " << msg << LOOP_COLOR_RESET
             << std::endl;
 }
+
+void Debug::Init() { EnableAnsiColors(); }
 
 } // namespace LoopEngine

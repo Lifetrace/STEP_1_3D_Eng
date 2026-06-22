@@ -16,6 +16,7 @@ LoopEngine::Window::Window(int width, int height, const char *title)
 }
 
 int LoopEngine::Window::Init(int width, int height, const char *title) {
+  Debug::Init();
 
   glfwSetErrorCallback(CallBack::error_callback);
 
