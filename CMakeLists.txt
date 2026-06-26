@@ -5,6 +5,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(LoopEngine src/main.cpp src/Window/WindowInit.cpp src/Other/Debug.cpp)
 
+#target_compile_definitions(LoopEngine PRIVATE LOOP_ENABLE_DEBUG_WINDOWSIZE)
+
 target_include_directories(LoopEngine PUBLIC ${CMAKE_HOME_DIRECTORY}/include)
 
 #target_link_libraries(LoopEngine PRIVATE ws2_32)

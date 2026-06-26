@@ -12,11 +12,9 @@
 // Window.hpp inits
 LoopEngine::Window::Window(int width, int height, const char *title)
     : cur_width(width), cur_height(height), title(title) {
-  WindowList[this->window] = this;
   if (Init(width, height, title) == 0) {
     initialized = true;
-  } else {
-    WindowList.clear();
+    WindowList[this->window] = this;
   }
 }
 
@@ -89,6 +87,8 @@ void LoopEngine::CallBack::frame_buffersize_callback(GLFWwindow *window,
   win_->SetHeight(height);
   win_->SetWidth(width);
   glViewport(0, 0, width, height);
+#ifdef LOOP_ENABLE_DEBUG_WINDOWSIZE
   Debug::Log("Window Size changed -> " + std::to_string(win_->GetWidth()) +
              ":" + std::to_string(win_->GetHeight()));
+#endif
 }
