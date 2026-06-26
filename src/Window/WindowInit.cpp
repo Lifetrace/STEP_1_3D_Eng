@@ -3,15 +3,20 @@
 
 #include "Other/CallBacks.hpp"
 #include "Other/Debug.hpp"
+#include <string>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
 
+// Window.hpp inits
 LoopEngine::Window::Window(int width, int height, const char *title)
     : cur_width(width), cur_height(height), title(title) {
+  WindowList[this->window] = this;
   if (Init(width, height, title) == 0) {
     initialized = true;
+  } else {
+    WindowList.clear();
   }
 }
 
@@ -46,6 +51,9 @@ int LoopEngine::Window::Init(int width, int height, const char *title) {
 
   glfwMakeContextCurrent(window);
 
+  glfwSetFramebufferSizeCallback(
+      window, LoopEngine::CallBack::frame_buffersize_callback);
+
   if (!gladLoadGL(glfwGetProcAddress)) {
     Debug::Error("GLAD Proc Address has NOT been loaded correctly!");
     Terminate();
@@ -73,3 +81,14 @@ void LoopEngine::Window::SetClose(bool value) {
   glfwSetWindowShouldClose(window, (int)value);
 }
 void LoopEngine::Window::SwapBuf() { glfwSwapBuffers(window); }
+
+// CallBacks.hpp Init
+void LoopEngine::CallBack::frame_buffersize_callback(GLFWwindow *window,
+                                                     int width, int height) {
+  LoopEngine::Window *win_ = LoopEngine::Window::GetWin(window);
+  win_->SetHeight(height);
+  win_->SetWidth(width);
+  glViewport(0, 0, width, height);
+  Debug::Log("Window Size changed -> " + std::to_string(win_->GetWidth()) +
+             ":" + std::to_string(win_->GetHeight()));
+}

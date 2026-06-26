@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 class GLFWwindow;
 
 namespace LoopEngine {
@@ -15,6 +17,8 @@ class Window {
 
   int Init(int width, int height, const char *title);
 
+  static std::unordered_map<GLFWwindow *, Window *> inline WindowList;
+
 public:
   Window(int width, int height, const char *title);
 
@@ -26,10 +30,11 @@ public:
   void SetWidth(int width) { cur_width = width; }
   void SetHeight(int height) { cur_height = height; }
 
-  int GetWidth(int width) { return cur_width; }
-  int GetHeight(int height) { return cur_height; }
+  int GetWidth() { return cur_width; }
+  int GetHeight() { return cur_height; }
 
   bool GetStable() { return initialized; }
 
+  static Window *GetWin(GLFWwindow *window_) { return WindowList[window_]; }
 };
 } // namespace LoopEngine
