@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Graphics/GLINC.hpp"
+#include "Other/Debug.hpp"
+#include "Window/Window.hpp"
+
 namespace LoopEngine {
 class Application {
 public:

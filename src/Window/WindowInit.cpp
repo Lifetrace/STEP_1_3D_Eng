@@ -3,11 +3,8 @@
 
 #include "Other/CallBacks.hpp"
 #include "Other/Debug.hpp"
-#include <string>
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <glad/gl.h>
+#include "Graphics/GLINC.hpp"
 
 // Window.hpp inits
 LoopEngine::Window::Window(int width, int height, const char *title)
@@ -71,6 +68,8 @@ void LoopEngine::Window::Terminate() {
   }
 
   glfwTerminate();
+
+  WindowList.erase(window);
 }
 bool LoopEngine::Window::IsClose() {
   return (bool)glfwWindowShouldClose(window);

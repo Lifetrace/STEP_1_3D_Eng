@@ -1,7 +1,4 @@
-#include "main.hpp"
-
-#include "Other/GLINC.hpp"
-#include "Window/Window.hpp"
+#include "Application.hpp"
 
 int LoopEngine::Application::Start() {
   LoopEngine::Window Window(1280, 720, "The Game");

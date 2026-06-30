@@ -35,6 +35,12 @@ public:
 
   bool GetStable() { return initialized; }
 
-  static Window *GetWin(GLFWwindow *window_) { return WindowList[window_]; }
+  static Window *GetWin(GLFWwindow *window_) {
+    auto it = WindowList.find(window_);
+    if (it == WindowList.end()) {
+      return nullptr;
+    }
+    return it->second;
+  }
 };
 } // namespace LoopEngine
