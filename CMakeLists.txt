@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 4.1)
 project(LoopEngine LANGUAGES C CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(LoopEngine src/main.cpp src/Window/WindowInit.cpp src/Other/Debug.cpp)
+add_executable(LoopEngine src/main.cpp src/Window/WindowInit.cpp src/Other/Debug.cpp src/app.cpp)
 
 #target_compile_definitions(LoopEngine PRIVATE LOOP_ENABLE_DEBUG_WINDOWSIZE)
 
