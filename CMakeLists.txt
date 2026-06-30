@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.2)
+cmake_minimum_required(VERSION 4.1)
 
 project(LoopEngine LANGUAGES C CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

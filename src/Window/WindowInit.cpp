@@ -80,7 +80,7 @@ void LoopEngine::Window::SetClose(bool value) {
 }
 void LoopEngine::Window::SwapBuf() { glfwSwapBuffers(window); }
 
-// CallBacks.hpp Init
+// CallBacks.hpp (for Window.cpp) Init
 void LoopEngine::CallBack::frame_buffersize_callback(GLFWwindow *window,
                                                      int width, int height) {
   LoopEngine::Window *win_ = LoopEngine::Window::GetWin(window);
