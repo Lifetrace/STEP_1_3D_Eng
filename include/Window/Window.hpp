@@ -15,9 +15,9 @@ class Window {
 
   bool initialized = false;
 
-  int Init(int width, int height, const char *title);
-
   static std::unordered_map<GLFWwindow *, Window *> inline WindowList;
+
+  int Init(int width, int height, const char *title);
 
 public:
   Window(int width, int height, const char *title);
@@ -35,6 +35,9 @@ public:
 
   bool GetStable() { return initialized; }
 
+  GLFWwindow *GetThisWindow() { return this->window; }
+
+  Window *GetThis() { return this; }
   static Window *GetWin(GLFWwindow *window_) {
     auto it = WindowList.find(window_);
     if (it == WindowList.end()) {
@@ -42,5 +45,7 @@ public:
     }
     return it->second;
   }
+
+  ~Window() = default;
 };
 } // namespace LoopEngine

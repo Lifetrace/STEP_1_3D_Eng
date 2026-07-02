@@ -1,4 +1,5 @@
 #include "Application.hpp"
+#include "Window/Events.hpp"
 
 int LoopEngine::Application::Start() {
   LoopEngine::Window Window(1280, 720, "The Game");
@@ -7,11 +8,13 @@ int LoopEngine::Application::Start() {
     return -1;
   }
 
+  Events::Init(Window.GetThisWindow());
+
   while (!Window.IsClose()) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     Window.SwapBuf();
-    glfwPollEvents();
+    Events::PollEvents();
   }
 
   Window.Terminate();

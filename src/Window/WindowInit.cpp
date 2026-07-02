@@ -5,6 +5,7 @@
 #include "Other/Debug.hpp"
 
 #include "Graphics/GLINC.hpp"
+#include <string>
 
 // Window.hpp inits
 LoopEngine::Window::Window(int width, int height, const char *title)
@@ -79,10 +80,70 @@ void LoopEngine::Window::SetClose(bool value) {
 }
 void LoopEngine::Window::SwapBuf() { glfwSwapBuffers(window); }
 
+// Events.hpp Inits
+
+int LoopEngine::Events::Init(GLFWwindow *window) {
+  Window *_win = Window::GetWin(window);
+
+  _keys = new bool[LOOP_KEYS_COUNT];
+  _frames = new uint[LOOP_KEYS_COUNT];
+
+  memset(_keys, false, LOOP_KEYS_COUNT * sizeof(bool));
+  memset(_frames, 0, LOOP_KEYS_COUNT * sizeof(uint));
+
+  glfwSetKeyCallback(window, CallBack::key_callback);
+  glfwSetMouseButtonCallback(window, CallBack::mouse_button_callback);
+  glfwSetCursorPosCallback(window, CallBack::cursor_position_callback);
+
+  return 0;
+}
+
+bool LoopEngine::Events::justPressed(int keycode) {
+  if (keycode < 0 or keycode >= LOOP_KEYS_FROM_BUTTONS) {
+    return false;
+  }
+
+  return _keys[keycode] and (_frames[keycode] == _current);
+}
+bool LoopEngine::Events::isPressing(int keycode) {
+  if (keycode < 0 or keycode >= LOOP_KEYS_FROM_BUTTONS) {
+    return false;
+  }
+
+  return _keys[keycode];
+}
+
+bool LoopEngine::Events::justClicked(int button_code) {
+  if (button_code < LOOP_KEYS_FROM_BUTTONS or button_code >= LOOP_KEYS_COUNT) {
+    return false;
+  }
+
+  return _keys[button_code] && (_frames[button_code] == _current);
+}
+bool LoopEngine::Events::isHolding(int button_code) {
+  if (button_code < LOOP_KEYS_FROM_BUTTONS or button_code >= LOOP_KEYS_COUNT) {
+    return false;
+  }
+
+  return _keys[button_code];
+}
+
+void LoopEngine::Events::PollEvents() {
+  dX = 0.0f;
+  dY = 0.0f;
+
+  _current++;
+  glfwPollEvents();
+}
+
 // CallBacks.hpp (for Window.cpp) Init
 void LoopEngine::CallBack::frame_buffersize_callback(GLFWwindow *window,
                                                      int width, int height) {
   LoopEngine::Window *win_ = LoopEngine::Window::GetWin(window);
+
+  if (win_ == nullptr)
+    return;
+
   win_->SetHeight(height);
   win_->SetWidth(width);
   glViewport(0, 0, width, height);
@@ -90,4 +151,45 @@ void LoopEngine::CallBack::frame_buffersize_callback(GLFWwindow *window,
   Debug::Log("Window Size changed -> " + std::to_string(win_->GetWidth()) +
              ":" + std::to_string(win_->GetHeight()));
 #endif
+}
+
+// CallBacks.hpp (for Events.cpp) Init
+void LoopEngine::CallBack::cursor_position_callback(GLFWwindow *window,
+                                                    double xpos, double ypos) {
+  if (Events::not_first_frame) {
+    Events::dX = xpos - Events::x;
+    Events::dY = ypos - Events::y;
+  } else {
+    Events::not_first_frame = true;
+  }
+  Events::x = xpos;
+  Events::y = ypos;
+#ifdef LOOP_ENABLE_CURSOR_DEBUG
+  Debug::Log("Cursor coordinates: " + std::to_string(Events::x) + " | " +
+             std::to_string(Events::y));
+  Debug::Log("Cursor movement: " + std::to_string(Events::dX) + " | " +
+             std::to_string(Events::dY));
+#endif
+}
+void LoopEngine::CallBack::key_callback(GLFWwindow *window, int key,
+                                        int scancode, int action, int mode) {
+  if (action == GLFW_PRESS) {
+    Events::_frames[key] = Events::_current;
+    Events::_keys[key] = true;
+  } else if (action == GLFW_RELEASE) {
+    Events::_frames[key] = Events::_current;
+    Events::_keys[key] = false;
+  }
+
+  return;
+}
+void LoopEngine::CallBack::mouse_button_callback(GLFWwindow *window, int button,
+                                                 int action, int mode) {
+  if (action == GLFW_PRESS) {
+    Events::_frames[LOOP_KEYS_FROM_BUTTONS + button] = Events::_current;
+    Events::_keys[LOOP_KEYS_FROM_BUTTONS + button] = true;
+  } else if (action == GLFW_RELEASE) {
+    Events::_frames[LOOP_KEYS_FROM_BUTTONS + button] = Events::_current;
+    Events::_keys[LOOP_KEYS_FROM_BUTTONS + button] = false;
+  }
 }

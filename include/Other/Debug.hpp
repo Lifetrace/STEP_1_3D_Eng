@@ -15,11 +15,15 @@ namespace LoopEngine {
 
 class Debug {
 public:
+  Debug() = delete;
+
   static void Log(std::string msg);
   static void Warning(std::string msg);
   static void Error(std::string msg);
 
   static void Init();
+
+  ~Debug() = default;
 };
 
 } // namespace LoopEngine

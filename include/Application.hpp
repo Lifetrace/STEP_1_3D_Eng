@@ -2,6 +2,7 @@
 
 #include "Graphics/GLINC.hpp"
 #include "Other/Debug.hpp"
+#include "Window/Events.hpp"
 #include "Window/Window.hpp"
 
 namespace LoopEngine {

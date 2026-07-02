@@ -1,0 +1,17 @@
+#include Player
+
+OutLoop{
+    PLayer.Name = "Player 1";
+}
+
+InLoop{
+    Player.Move(1.0f, 0.0f, 0.0f);
+}
+
+OnEvent(EventType.TriggerEnter, "test trigger"){
+    #exclude this;
+}
+
+AfterLoop{
+    Player.Destroy
+}

@@ -9,7 +9,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(LoopEngine src/main.cpp src/Window/WindowInit.cpp src/Other/Debug.cpp src/Application.cpp)
 
-#target_compile_definitions(LoopEngine PRIVATE LOOP_ENABLE_DEBUG_WINDOWSIZE)
 
 target_include_directories(LoopEngine PUBLIC ${CMAKE_HOME_DIRECTORY}/include)
 
@@ -30,3 +29,7 @@ target_link_libraries(LoopEngine PRIVATE glfw)
 
 # added glm
 target_include_directories(LoopEngine PRIVATE external/glm)
+
+# DEBUGS
+#target_compile_definitions(LoopEngine PRIVATE LOOP_ENABLE_DEBUG_WINDOWSIZE)
+#target_compile_definitions(LoopEngine PRIVATE LOOP_ENABLE_CURSOR_DEBUG)
