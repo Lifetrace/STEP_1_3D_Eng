@@ -7,7 +7,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(LoopEngine src/main.cpp src/Window/WindowInit.cpp src/Other/Debug.cpp src/Application.cpp)
+add_executable(LoopEngine src/main.cpp
+src/Window/WindowInit.cpp
+src/Other/Debug.cpp
+src/Graphics/ShaderInit.cpp
+src/Application.cpp)
 
 
 target_include_directories(LoopEngine PUBLIC ${CMAKE_HOME_DIRECTORY}/include)
