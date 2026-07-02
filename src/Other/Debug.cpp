@@ -28,7 +28,7 @@ void Debug::Log(std::string msg) {
 }
 
 void Debug::Warning(std::string msg) {
-  std::cout << LOOP_DEBUG_COLOR_BLUE << "[WARNING] " << msg
+  std::cout << LOOP_DEBUG_COLOR_YELLOW << "[WARNING] " << msg
             << LOOP_DEBUG_COLOR_RESET << std::endl;
 }
 

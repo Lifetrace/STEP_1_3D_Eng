@@ -27,6 +27,8 @@ public:
 
   uint GetID() { return this->id; }
 
+  std::string GetName() { return this->name; }
+
   static Shader *LoadShader(std::string V_source, std::string F_source,
                             std::string G_source, std::string name);
   static Shader *LoadShader(std::string V_source, std::string F_source,

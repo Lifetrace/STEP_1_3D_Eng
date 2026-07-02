@@ -61,6 +61,9 @@ int LoopEngine::Window::Init(int width, int height, const char *title) {
 
   glViewport(0, 0, width, height);
 
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   return 0;
 }
 void LoopEngine::Window::Terminate() {

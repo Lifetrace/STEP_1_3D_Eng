@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/GLINC.hpp"
+#include "Graphics/Buffers.hpp"
 #include "Graphics/Shader.hpp"
 #include "Other/Debug.hpp"
 #include "Window/Events.hpp"

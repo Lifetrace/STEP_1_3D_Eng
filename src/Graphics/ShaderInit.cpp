@@ -44,7 +44,7 @@ int LoopEngine::Shader::CheckShaderCompile(uint id) {
 int LoopEngine::Shader::CheckProgramCompile(uint id) {
   int success = 0;
 
-  glGetShaderiv(id, GL_LINK_STATUS, &success);
+  glGetProgramiv(id, GL_LINK_STATUS, &success);
 
   if (!success) {
     char infoLog[1024];
@@ -70,20 +70,25 @@ LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
 
   // Get String Code from file paths (also debug)
   std::string V_string = ReadTextFile(V_source);
-  if (V_string.empty()) {
-    Debug::Error("Vertex shader file is empty or not found: " + V_source);
-    return nullptr;
-  }
-
   std::string F_string = ReadTextFile(F_source);
-  if (F_string.empty()) {
-    Debug::Error("Fragment shader file is empty or not found: " + F_source);
-    return nullptr;
-  }
-
   std::string G_string = ReadTextFile(G_source);
-  if (G_string.empty()) {
-    Debug::Error("Geometry shader file is empty or not found: " + G_source);
+
+  if (V_string.empty() or F_string.empty() or G_string.empty()) {
+    if (V_string.empty()) {
+      Debug::Error("Vertex shader file is empty or not found: " + V_source);
+    }
+
+    if (F_string.empty()) {
+      Debug::Error("Fragment shader file is empty or not found: " + F_source);
+    }
+
+    if (G_string.empty()) {
+      Debug::Error("Geometry shader file is empty or not found: " + F_source);
+    }
+
+    Debug::Warning(name +
+                   " was not loaded. Rendering will continue without shader.");
+
     return nullptr;
   }
 
@@ -100,8 +105,12 @@ LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
   glCompileShader(V_id);
 
   if (LoopEngine::Shader::CheckShaderCompile(V_id) != 0) {
+    Debug::Warning(name +
+                   "was not loaded. Rendering will continue without shader.");
     return nullptr;
   }
+
+  Debug::Log(name + ": vertex component has been successfully loaded");
 
   // Create fragment Shader and check compile status
   F_id = glCreateShader(GL_FRAGMENT_SHADER);
@@ -109,8 +118,12 @@ LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
   glCompileShader(F_id);
 
   if (LoopEngine::Shader::CheckShaderCompile(F_id) != 0) {
+    Debug::Warning(name +
+                   "was not loaded. Rendering will continue without shader.");
     return nullptr;
   }
+
+  Debug::Log(name + ": fragment component has been successfully loaded");
 
   // Create geometry Shader and check compile status
   G_id = glCreateShader(GL_GEOMETRY_SHADER);
@@ -118,8 +131,12 @@ LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
   glCompileShader(G_id);
 
   if (LoopEngine::Shader::CheckShaderCompile(G_id) != 0) {
+    Debug::Warning(name +
+                   "was not loaded. Rendering will continue without shader.");
     return nullptr;
   }
+
+  Debug::Log(name + ": geometry component has been successfully loaded");
 
   uint Pr_id; // shader program id
 
@@ -136,6 +153,8 @@ LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
   if (Shader::CheckProgramCompile(Pr_id) != 0) {
     return nullptr;
   }
+
+  Debug::Log(name + ": shader program has been successfully loaded");
 
   // Delete useless (for now) shaders
   glDeleteShader(V_id);
@@ -167,6 +186,9 @@ LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
       Debug::Error("Fragment shader file is empty or not found: " + F_source);
     }
 
+    Debug::Warning(name +
+                   " was not loaded. Rendering will continue without shader.");
+
     return nullptr;
   }
 
@@ -182,8 +204,12 @@ LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
   glCompileShader(V_id);
 
   if (LoopEngine::Shader::CheckShaderCompile(V_id) != 0) {
+    Debug::Warning(name +
+                   "was not loaded. Rendering will continue without shader.");
     return nullptr;
   }
+
+  Debug::Log(name + ": vertex component has been successfully loaded");
 
   // Create fragment Shader and check compile status
   F_id = glCreateShader(GL_FRAGMENT_SHADER);
@@ -191,8 +217,12 @@ LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
   glCompileShader(F_id);
 
   if (LoopEngine::Shader::CheckShaderCompile(F_id) != 0) {
+    Debug::Warning(name +
+                   "was not loaded. Rendering will continue without shader.");
     return nullptr;
   }
+
+  Debug::Log(name + ": fragment component has been successfully loaded");
 
   uint Pr_id; // shader program id
 
@@ -208,6 +238,8 @@ LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
   if (Shader::CheckProgramCompile(Pr_id) != 0) {
     return nullptr;
   }
+
+  Debug::Log(name + ": shader program has been successfully loaded");
 
   // Delete useless (for now) shaders
   glDeleteShader(V_id);
