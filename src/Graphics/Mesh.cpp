@@ -35,6 +35,11 @@ void LoopEngine::Mesh::Create() {
 
   SetData(newData);
 
+  if (buffer->Upload() != 0) {
+    Debug::Error("Mesh (" + name + ") buffer upload failed!");
+    return;
+  }
+
   created = true;
 }
 

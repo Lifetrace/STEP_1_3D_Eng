@@ -22,6 +22,8 @@ int LoopEngine::Application::Start() {
 
   mesh1.Create();
 
+  mesh1.GetTransform().ScaleTo({0.5f, 0.5f, 0.5f});
+
   while (!Window.IsClose()) {
     glClear(GL_COLOR_BUFFER_BIT);
 

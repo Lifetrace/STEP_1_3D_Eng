@@ -59,6 +59,8 @@ public:
 
   void Create();
 
+  Transform &GetTransform() { return transform; }
+
   void UpdateTransform();
 
   void DrawAsSolid();
