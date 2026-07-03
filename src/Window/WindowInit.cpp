@@ -32,6 +32,7 @@ int LoopEngine::Window::Init(int width, int height, const char *title) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
   glfwWindowHint(GLFW_SAMPLES, 8);
 
   window = glfwCreateWindow(width, height, "The Game", nullptr, nullptr);
@@ -136,6 +137,10 @@ void LoopEngine::Events::PollEvents() {
   dY = 0.0f;
 
   _current++;
+
+  deltaTime = glfwGetTime() - time;
+  time = glfwGetTime();
+
   glfwPollEvents();
 }
 

@@ -26,6 +26,9 @@ public:
   static bool inline _cursor_locked = false;
   static bool inline not_first_frame = false;
 
+  static float inline time = 0.0f;
+  static float inline deltaTime = 0.0f;
+
   static int Init(GLFWwindow *window);
   static void PollEvents();
 

@@ -7,8 +7,10 @@ in layout(location = 2) vec2 v_textCoord;
 out vec4 out_color;
 out vec2 a_textCoord;
 
+uniform mat4 model;
+
 void main() {
-    gl_Position = vec4(v_position, 1.0);
+    gl_Position = model * vec4(v_position, 1.0);
     a_textCoord = v_textCoord;
     out_color = v_color;
 }

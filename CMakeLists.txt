@@ -8,13 +8,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(LoopEngine src/main.cpp
-src/Window/WindowInit.cpp
-src/Other/Debug.cpp
-src/Graphics/ShaderInit.cpp
 src/Application.cpp
+
+src/Graphics/ShaderInit.cpp
 src/Graphics/Buffers.cpp
-src/loaders/PngLoader.cpp
 src/Graphics/Texture.cpp
+src/Graphics/Mesh.cpp
+
+src/Window/WindowInit.cpp
+
+src/loaders/PngLoader.cpp
+
+src/Other/Debug.cpp
 )
 
 

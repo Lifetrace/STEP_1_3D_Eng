@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <unordered_map>
 
 #include "Other/Data.hpp"
 
@@ -13,6 +13,7 @@ class Buffers {
 
   uint VBO_position = 0;
   uint VBO_color = 0;
+  uint VBO_texcoord = 0;
 
   uint EBO = 0;
 
@@ -20,7 +21,7 @@ class Buffers {
 
   bool uploaded = false;
 
-  static std::vector<Buffers *> BuffersList;
+  static std::unordered_map<std::string, Buffers *> BuffersList;
 
   std::string name;
 
@@ -31,10 +32,10 @@ public:
   void SetVertColors(std::vector<float> Vcolor);
 
   VertexData &GetData() { return _data; }
-
   const VertexData &GetData() const { return _data; }
 
-  void Draw();
+  void DrawSolid();
+  void DrawLines(); // dev
 
   int Upload();
 

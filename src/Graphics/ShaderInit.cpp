@@ -7,6 +7,8 @@
 #include <sstream>
 #include <string>
 
+#include <glm/gtc/type_ptr.hpp>
+
 std::string LoopEngine::ReadTextFile(const std::string &file) {
   std::fstream in(file, std::ios::in);
 
@@ -62,6 +64,11 @@ int LoopEngine::Shader::CheckProgramCompile(uint id) {
 }
 
 LoopEngine::Shader::Shader(uint id, std::string name) : id(id), name(name) {}
+
+void LoopEngine::Shader::SetMat4x4(std::string name, glm::mat4x4 mat) {
+  uint location = glGetUniformLocation(id, name.c_str());
+  glad_glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+}
 
 LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
                                                    std::string F_source,

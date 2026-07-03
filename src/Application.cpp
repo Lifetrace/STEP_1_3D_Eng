@@ -1,5 +1,5 @@
 #include "Application.hpp"
-#include "Graphics/Buffers.hpp"
+#include "Graphics/Mesh.hpp"
 #include "Graphics/Texture.hpp"
 #include "Other/Debug.hpp"
 
@@ -12,39 +12,26 @@ int LoopEngine::Application::Start() {
 
   Events::Init(Window.GetThisWindow());
 
+  Mesh mesh1("cube");
+  mesh1.SetType(PrimitiveType::Cube);
+
   Shader *BasicShader = Shader::LoadShader(
-      "assets/Shaders/basic.vert", "assets/Shaders/basic.frag", "BasicShader");
+      "assets/Shaders/basic.vert", "assets/Shaders/basic.frag", "Basic");
 
-  Buffers buffer("Basic");
+  mesh1.SetShader(BasicShader);
 
-  buffer.GetData().VertPos = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f,
-                              0.0f,  0.0f,  0.5f, 0.0f};
-
-  buffer.GetData().VertColors = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-                                 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
-
-  buffer.Upload();
-
-  Texture *texture = Texture::LoadTexturePNG("assets/Textures/Test.png");
-
-  if (texture == nullptr) {
-    Debug::Warning("Texture is not loaded. Continue with ignore");
-  }
+  mesh1.Create();
 
   while (!Window.IsClose()) {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    if (BasicShader) {
-      BasicShader->Use();
-    }
-
-    texture->Bind();
-
-    buffer.Draw();
+    mesh1.DrawAsSolid();
 
     Window.SwapBuf();
     Events::PollEvents();
   }
+
+  system("pause");
 
   Window.Terminate();
 

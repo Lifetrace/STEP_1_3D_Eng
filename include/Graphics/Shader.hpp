@@ -1,7 +1,10 @@
 #pragma once
 
+#include "glm/ext/matrix_float4x4.hpp"
 #include <string>
 #include <unordered_map>
+
+#include <glm/mat4x4.hpp>
 
 typedef unsigned int uint;
 
@@ -28,6 +31,8 @@ public:
   uint GetID() { return this->id; }
 
   std::string GetName() { return this->name; }
+
+ void SetMat4x4(std::string name, glm::mat4x4 mat);
 
   static Shader *LoadShader(std::string V_source, std::string F_source,
                             std::string G_source, std::string name);
