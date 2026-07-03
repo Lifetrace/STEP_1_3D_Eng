@@ -154,6 +154,13 @@ void LoopEngine::CallBack::frame_buffersize_callback(GLFWwindow *window,
 
   win_->SetHeight(height);
   win_->SetWidth(width);
+
+  if (width != 0) {
+    win_->SetAspect(((float)win_->GetWidth()) / ((float)win_->GetHeight()));
+  } else{
+      win_->SetAspect(1.0f);
+  }
+
   glViewport(0, 0, width, height);
 #ifdef LOOP_ENABLE_DEBUG_WINDOWSIZE
   Debug::Log("Window Size changed -> " + std::to_string(win_->GetWidth()) +

@@ -26,7 +26,7 @@ public:
   }
 
   void ScaleTo(glm::vec3 scale) { this->scale = scale; }
-  void DeltaScaleTo(glm::vec3 delta_scale) { this->scale += scale; }
+  void DeltaScaleTo(glm::vec3 delta_scale) { this->scale += delta_scale; }
 
   glm::vec3 GetPosition() { return position; }
   glm::vec3 GetRotation() { return rotation; }

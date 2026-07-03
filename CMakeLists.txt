@@ -20,6 +20,7 @@ src/Window/WindowInit.cpp
 src/loaders/PngLoader.cpp
 
 src/Other/Debug.cpp
+src/Other/Camera.cpp
 )
 
 

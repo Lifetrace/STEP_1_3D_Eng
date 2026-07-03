@@ -1,12 +1,15 @@
 #include "Graphics/Mesh.hpp"
-#include "Other/Debug.hpp"
+#include "Other/Camera.hpp"
 
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include "glm/gtx/transform.hpp"
 
 // Mesh init
-LoopEngine::Mesh::Mesh(std::string name) : name(name) { MeshList[name] = this; }
+LoopEngine::Mesh::Mesh(std::string name, Window *window)
+    : name(name), window(window) {
+  MeshList[name] = this;
+}
 
 void LoopEngine::Mesh::Create() {
   if (!type_selected) {
@@ -47,6 +50,10 @@ void LoopEngine::Mesh::DrawAsSolid() {
   if (shader_loaded) {
     UpdateTransform();
     shader->Use();
+
+    shader->SetMat4x4("view", Camera::GetActiveCamera()->GetView());
+    shader->SetMat4x4("proj", Camera::GetActiveCamera()->GetProj(window));
+
     buffer->DrawSolid();
   } else {
     Debug::Error("Mesh(" + name +
@@ -71,6 +78,8 @@ void LoopEngine::Mesh::UpdateTransform() {
 
 // Transform methods init
 void LoopEngine::Transform::Update() {
+  model = glm::mat4(1.0f);
+
   model = glm::translate(model, this->GetPosition());
 
   model = glm::rotate(model, glm::radians(this->GetRotation().x),

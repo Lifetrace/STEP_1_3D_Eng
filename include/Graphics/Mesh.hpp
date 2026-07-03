@@ -6,12 +6,16 @@
 #include "Other/Data.hpp"
 #include "Other/Debug.hpp"
 #include "Other/Transform.hpp"
+#include "Window/Window.hpp"
 
 enum class PrimitiveType { Plane, Cube, Cylinder, Cone, Sphere };
+
 
 namespace LoopEngine {
 class Mesh {
   std::string name;
+
+  Window *window = nullptr;
 
   Shader *shader = nullptr;
   Buffers *buffer = nullptr;
@@ -39,7 +43,7 @@ class Mesh {
   }
 
 public:
-  Mesh(std::string name);
+  Mesh(std::string name, Window *window);
 
   void SetType(PrimitiveType type) {
     if (!type_selected) {

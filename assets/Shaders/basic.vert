@@ -9,8 +9,11 @@ out vec2 a_textCoord;
 
 uniform mat4 model;
 
+uniform mat4 proj;
+uniform mat4 view;
+
 void main() {
-    gl_Position = model * vec4(v_position, 1.0);
+    gl_Position = proj * view * model * vec4(v_position, 1.0);
     a_textCoord = v_textCoord;
     out_color = v_color;
 }
