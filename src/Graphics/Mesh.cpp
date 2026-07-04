@@ -87,6 +87,10 @@ void LoopEngine::Mesh::UpdateTransform() {
     return;
   }
 
+  if (!transform.IsChanged()) {
+    return;
+  }
+
   transform.Update();
 
   shader->SetMat4x4("model", transform.GetMat());
@@ -108,4 +112,6 @@ void LoopEngine::Transform::Update() {
                       glm::vec3(0.0f, 0.0f, 1.0f));
 
   model = glm::scale(model, this->GetScale());
+
+  ResetChanged();
 }

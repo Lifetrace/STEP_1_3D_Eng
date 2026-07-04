@@ -48,6 +48,8 @@ void LoopEngine::Camera::UpdateVectors() {
       glm::normalize(glm::vec3(rotation * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f)));
 
   up = glm::normalize(glm::vec3(rotation * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)));
+
+  transform.ResetRotationChanged();
 }
 
 LoopEngine::Camera *LoopEngine::Camera::GetActiveCamera() {

@@ -9,6 +9,8 @@
 
 namespace LoopEngine {
 class Camera {
+  float sensivity = 2.0f;
+
   std::string name;
 
   glm::mat4 view = glm::mat4(1.0f);
@@ -24,13 +26,14 @@ class Camera {
 
   static std::vector<Camera *> inline CameraList;
 
-
   bool isActive = false;
 
 public:
   void UpdateVectors();
 
   Camera(glm::vec3 position, float fov, std::string name);
+
+  float GetSens() { return sensivity; }
 
   Transform &GetTransform() { return transform; }
 
@@ -42,6 +45,5 @@ public:
   bool IsActive() { return isActive; }
 
   static Camera *GetActiveCamera();
-
 };
 } // namespace LoopEngine

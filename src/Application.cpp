@@ -36,7 +36,6 @@ int LoopEngine::Application::Start() {
       Window.SetCursorLocked(!Events::_cursor_locked);
     }
 
-
     // Cube Rotation
     if (Events::isPressing(GLFW_KEY_RIGHT)) {
       mesh1.GetTransform().DeltaRotateTo(glm::vec3(0.0f, 90.0f, 0.0f) *
@@ -65,10 +64,16 @@ int LoopEngine::Application::Start() {
                                      Events::deltaTime);
     }
 
-    cam.GetTransform().DeltaRotateTo({0.0f, 0.5f, 0.0f});
-    cam.UpdateVectors();
+    cam.GetTransform().DeltaRotateTo(glm::vec3(-Events::dY, -Events::dX, 0.0f) *
+                                     cam.GetSens() * Events::deltaTime);
 
+    // Draw Mesh as Solid
     mesh1.DrawAsSolid();
+
+    // Update cam rotation matrix
+    if (cam.GetTransform().IsRotationChanged()) {
+      cam.UpdateVectors();
+    }
 
     Window.SwapBuf();
     Events::PollEvents();

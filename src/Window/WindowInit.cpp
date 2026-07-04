@@ -103,6 +103,7 @@ void LoopEngine::Window::SetCursorLocked(bool locked) {
   }
 
   Events::not_first_frame = false;
+  Events::_cursor_locked = locked;
 }
 // Events.hpp Inits
 
