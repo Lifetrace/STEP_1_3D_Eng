@@ -48,8 +48,9 @@ int LoopEngine::Window::Init(int width, int height, const char *title) {
 
   glfwMakeContextCurrent(window);
 
-  glfwSetFramebufferSizeCallback(
-      window, LoopEngine::CallBack::frame_buffersize_callback);
+  glfwSwapInterval(1);
+
+  glfwSetFramebufferSizeCallback(window, CallBack::frame_buffersize_callback);
 
   if (!gladLoadGL(glfwGetProcAddress)) {
     Debug::Error("GLAD Proc Address has NOT been loaded correctly!");
@@ -61,6 +62,11 @@ int LoopEngine::Window::Init(int width, int height, const char *title) {
   Debug::Log("GLAD has been initialized correctly!");
 
   glViewport(0, 0, width, height);
+
+  SetAspect(static_cast<float>(width) / static_cast<float>(height));
+
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS);
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -84,6 +90,20 @@ void LoopEngine::Window::SetClose(bool value) {
 }
 void LoopEngine::Window::SwapBuf() { glfwSwapBuffers(window); }
 
+void LoopEngine::Window::SetCursorLocked(bool locked) {
+  if (locked) {
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    if (glfwRawMouseMotionSupported()) {
+      glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    }
+  } else {
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
+  }
+
+  Events::not_first_frame = false;
+}
 // Events.hpp Inits
 
 int LoopEngine::Events::Init(GLFWwindow *window) {
@@ -157,8 +177,8 @@ void LoopEngine::CallBack::frame_buffersize_callback(GLFWwindow *window,
 
   if (width != 0) {
     win_->SetAspect(((float)win_->GetWidth()) / ((float)win_->GetHeight()));
-  } else{
-      win_->SetAspect(1.0f);
+  } else {
+    win_->SetAspect(1.0f);
   }
 
   glViewport(0, 0, width, height);

@@ -24,7 +24,7 @@ glm::mat4 LoopEngine::Camera::GetView() {
 }
 
 glm::mat4 LoopEngine::Camera::GetProj(LoopEngine::Window *win) {
-  return glm::perspective(fov, win->GetAspect(), 0.1f, 100.0f);
+  return glm::perspective(glm::radians(fov), win->GetAspect(), 0.1f, 100.0f);
 }
 
 void LoopEngine::Camera::UpdateVectors() {
@@ -53,7 +53,6 @@ void LoopEngine::Camera::UpdateVectors() {
 LoopEngine::Camera *LoopEngine::Camera::GetActiveCamera() {
   for (int i = 0; i < CameraList.size(); i++) {
     if (CameraList[i]->IsActive()) {
-      Debug::Log(CameraList[i]->GetName() + " is active camera for now");
       return CameraList[i];
     }
   }

@@ -11,6 +11,8 @@ class Transform {
 
   glm::mat4 model;
 
+  bool changed = false;
+
 public:
   Transform() {
     glm::mat4 _model(1.0f);
@@ -33,6 +35,10 @@ public:
   glm::vec3 GetScale() { return scale; }
 
   glm::mat4 GetMat() { return model; }
+
+  void ResetRotation() { position = {0.0f, 0.0f, 0.0f}; }
+  void ResetPosition() { rotation = {0.0f, 0.0f, 0.0f}; }
+  void ResetScale() { scale = {1.0f, 1.0f, 1.0f}; }
 
   void Update();
 

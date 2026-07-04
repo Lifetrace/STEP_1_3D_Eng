@@ -57,6 +57,8 @@ public:
     return it->second;
   }
 
+  void SetCursorLocked(bool locked);
+
   ~Window() = default;
 };
 } // namespace LoopEngine

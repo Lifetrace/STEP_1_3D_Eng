@@ -26,6 +26,9 @@ public:
   static void key_callback(GLFWwindow *window, int key, int scancode,
                            int action, int mode);
 
+  // For Camera Vectors
+  static void on_camera_update();
+
   ~CallBack() = default;
 };
 } // namespace LoopEngine

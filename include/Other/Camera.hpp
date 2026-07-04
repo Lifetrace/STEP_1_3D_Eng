@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Other/Transform.hpp"
+#include "Transform.hpp"
 #include "Window/Window.hpp"
+
+#include "CallBacks.hpp"
 
 #include <string>
 
@@ -22,15 +24,15 @@ class Camera {
 
   static std::vector<Camera *> inline CameraList;
 
-  void UpdateVectors();
 
   bool isActive = false;
 
 public:
+  void UpdateVectors();
+
   Camera(glm::vec3 position, float fov, std::string name);
 
-  void RotateTo(glm::vec3 rotation);
-  void MoveTo(glm::vec3 position);
+  Transform &GetTransform() { return transform; }
 
   glm::mat4 GetView();
   glm::mat4 GetProj(Window *win);
@@ -40,5 +42,6 @@ public:
   bool IsActive() { return isActive; }
 
   static Camera *GetActiveCamera();
+
 };
 } // namespace LoopEngine

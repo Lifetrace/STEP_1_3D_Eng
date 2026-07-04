@@ -47,19 +47,35 @@ void LoopEngine::Mesh::Create() {
 }
 
 void LoopEngine::Mesh::DrawAsSolid() {
-  if (shader_loaded) {
-    UpdateTransform();
-    shader->Use();
-
-    shader->SetMat4x4("view", Camera::GetActiveCamera()->GetView());
-    shader->SetMat4x4("proj", Camera::GetActiveCamera()->GetProj(window));
-
-    buffer->DrawSolid();
-  } else {
-    Debug::Error("Mesh(" + name +
-                 ") doesn`t have any shader! Continue without drawing.");
+  if (!created) {
+    Debug::Error("Mesh (" + name + ") is not created!");
     return;
   }
+
+  if (!shader_loaded || shader == nullptr) {
+    Debug::Error("Mesh (" + name + ") doesn't have any shader!");
+    return;
+  }
+
+  if (buffer == nullptr) {
+    Debug::Error("Mesh (" + name + ") buffer is nullptr!");
+    return;
+  }
+
+  Camera *cam = Camera::GetActiveCamera();
+  if (cam == nullptr) {
+    Debug::Error("Mesh (" + name + ") cannot draw: active camera is nullptr!");
+    return;
+  }
+
+  shader->Use();
+
+  UpdateTransform();
+
+  shader->SetMat4x4("view", cam->GetView());
+  shader->SetMat4x4("proj", cam->GetProj(window));
+
+  buffer->DrawSolid();
 }
 
 void LoopEngine::Mesh::DrawAsLines() { return; }
