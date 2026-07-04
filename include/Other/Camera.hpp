@@ -9,7 +9,10 @@
 
 namespace LoopEngine {
 class Camera {
-  float sensivity = 2.0f;
+  float sensivity = 0.25f;
+
+  float moveSpeed = 3.0f;
+  glm::vec3 moveDirection = glm::vec3(0.0f);
 
   std::string name;
 
@@ -19,6 +22,9 @@ class Camera {
   glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
   glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
   glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
+
+  float yaw = 0.0f;
+  float pitch = 0.0f;
 
   float fov;
 
@@ -36,6 +42,10 @@ public:
   float GetSens() { return sensivity; }
 
   Transform &GetTransform() { return transform; }
+
+  glm::vec3 GetFront() const { return front; }
+  glm::vec3 GetRight() const { return right; }
+  glm::vec3 GetUp() const { return up; }
 
   glm::mat4 GetView();
   glm::mat4 GetProj(Window *win);

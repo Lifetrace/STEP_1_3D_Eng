@@ -1,4 +1,7 @@
 #include "Graphics/GLINC.hpp"
+#include "Graphics/Lightning/LightStr.hpp"
+#include "Graphics/Lightning/ShadowStr.hpp"
+#include "Graphics/Mesh.hpp"
 #include "Graphics/Shader.hpp"
 
 #include "Other/Debug.hpp"
@@ -9,6 +12,9 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+// SHADER INITIALIZATION
+
+// Read text file
 std::string LoopEngine::ReadTextFile(const std::string &file) {
   std::fstream in(file, std::ios::in);
 
@@ -23,6 +29,7 @@ std::string LoopEngine::ReadTextFile(const std::string &file) {
   return ss.str();
 }
 
+// Shader Compilations
 int LoopEngine::Shader::CheckShaderCompile(uint id) {
   int success = 0;
 
@@ -63,12 +70,8 @@ int LoopEngine::Shader::CheckProgramCompile(uint id) {
   return 0;
 }
 
+// Shader loadings
 LoopEngine::Shader::Shader(uint id, std::string name) : id(id), name(name) {}
-
-void LoopEngine::Shader::SetMat4x4(std::string name, glm::mat4x4 mat) {
-  uint location = glGetUniformLocation(id, name.c_str());
-  glad_glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
-}
 
 LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
                                                    std::string F_source,
@@ -261,6 +264,22 @@ LoopEngine::Shader *LoopEngine::Shader::LoadShader(std::string V_source,
   return ShaderList[Pr_id];
 }
 
+// Set mat4 in shader
+void LoopEngine::Shader::SetMat4x4(const std::string &name, glm::mat4x4 mat) {
+  uint location = glGetUniformLocation(id, name.c_str());
+  glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+void LoopEngine::Shader::SetVec3(const std::string &name, glm::vec3 &value) {
+  uint location = glGetUniformLocation(id, name.c_str());
+  glUniform3f(location, value.x, value.y, value.z);
+}
+void LoopEngine::Shader::SetVec4(const std::string &name, glm::vec4 &value) {
+  uint location = glGetUniformLocation(id, name.c_str());
+  glUniform4f(location, value.x, value.y, value.z, value.w);
+}
+
+// Shader Use
 void LoopEngine::Shader::Use() {
   auto it = ShaderList.find(this->id);
 
@@ -269,4 +288,61 @@ void LoopEngine::Shader::Use() {
   }
 }
 
+// Delete shader program
 LoopEngine::Shader::~Shader() { glDeleteProgram(id); }
+
+// --SHADER INITIALIZATION
+
+// LIGHTNING INITIALIZATION
+
+// Shadow Constructor
+LoopEngine::Shadow::Shadow() {
+  glGenFramebuffers(1, &depthMapFBO);
+  glGenTextures(1, &depthMap);
+
+  glBindTexture(GL_TEXTURE_2D, depthMap);
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH,
+               SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+  glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
+                         depthMap, 0);
+
+  glDrawBuffer(GL_NONE);
+  glReadBuffer(GL_NONE);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+// Light Constructor
+LoopEngine::Light::Light(glm::vec3 position, Shadow *shadow)
+    : lightPos(position), shadow(shadow) {
+
+  depthShader = Shader::LoadShader("assets/Shaders/shadow_depth.frag",
+                                   "assets/Shaders/shadow_depth.vert", "Depth");
+
+  glViewport(0, 0, shadow->SHADOW_WIDTH, shadow->SHADOW_HEIGHT);
+  glBindFramebuffer(GL_FRAMEBUFFER, shadow->depthMapFBO);
+  glClear(GL_DEPTH_BUFFER_BIT);
+
+  depthShader->SetMat4x4("lightSpaceMatrix", lightSpaceMatrix);
+
+  // Рисуешь ВСЕ объекты, которые должны отбрасывать тень
+  for (Mesh *mesh : Mesh::GetArray()) {
+    depthShader->SetMat4x4("model", mesh->GetTransform().GetMat());
+    mesh->DrawAsSolid();
+  }
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+// --LIGHTNING INITIALIZATION

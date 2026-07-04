@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/ext/matrix_float4x4.hpp"
+#include "glm/ext/vector_float3.hpp"
 #include <string>
 #include <unordered_map>
 
@@ -32,7 +33,10 @@ public:
 
   std::string GetName() { return this->name; }
 
- void SetMat4x4(std::string name, glm::mat4x4 mat);
+  void SetMat4x4(const std::string &name, glm::mat4x4 mat);
+
+  void SetVec3(const std::string &name, glm::vec3 &vec);
+  void SetVec4(const std::string &name, glm::vec4 &vec);
 
   static Shader *LoadShader(std::string V_source, std::string F_source,
                             std::string G_source, std::string name);

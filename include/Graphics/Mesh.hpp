@@ -10,7 +10,6 @@
 
 enum class PrimitiveType { Plane, Cube, Cylinder, Cone, Sphere };
 
-
 namespace LoopEngine {
 class Mesh {
   std::string name;
@@ -24,6 +23,7 @@ class Mesh {
   Transform transform;
 
   static std::unordered_map<std::string, Mesh *> inline MeshList;
+  static std::vector<Mesh *> MeshArray;
 
   PrimitiveType type;
 
@@ -60,6 +60,9 @@ public:
       Debug::Error("Loaded null shader to " + name + " mesh");
     }
   }
+  Shader *GetShader() { return shader; }
+
+  static std::vector<Mesh *> &GetArray() { return MeshArray; }
 
   void Create();
 

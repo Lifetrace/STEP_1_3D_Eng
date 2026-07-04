@@ -30,24 +30,29 @@ glm::mat4 LoopEngine::Camera::GetProj(LoopEngine::Window *win) {
 void LoopEngine::Camera::UpdateVectors() {
   glm::vec3 rot = transform.GetRotation();
 
-  glm::mat4 rotation = glm::mat4(1.0f);
+  // Ограничиваем pitch, чтобы камера не переворачивалась через верх/низ
+  if (rot.x > 89.0f) {
+    rot.x = 89.0f;
+    transform.RotateTo(rot);
+  }
 
-  rotation =
-      glm::rotate(rotation, glm::radians(rot.x), glm::vec3(1.0f, 0.0f, 0.0f));
+  if (rot.x < -89.0f) {
+    rot.x = -89.0f;
+    transform.RotateTo(rot);
+  }
 
-  rotation =
-      glm::rotate(rotation, glm::radians(rot.y), glm::vec3(0.0f, 1.0f, 0.0f));
+  pitch = glm::radians(rot.x);
+  yaw = glm::radians(rot.y);
 
-  rotation =
-      glm::rotate(rotation, glm::radians(rot.z), glm::vec3(0.0f, 0.0f, 1.0f));
+  front.x = -sin(yaw) * cos(pitch);
+  front.y = sin(pitch);
+  front.z = -cos(yaw) * cos(pitch);
+  front = glm::normalize(front);
 
-  front =
-      glm::normalize(glm::vec3(rotation * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f)));
+  glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-  right =
-      glm::normalize(glm::vec3(rotation * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f)));
-
-  up = glm::normalize(glm::vec3(rotation * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)));
+  right = glm::normalize(glm::cross(front, worldUp));
+  up = glm::normalize(glm::cross(right, front));
 
   transform.ResetRotationChanged();
 }

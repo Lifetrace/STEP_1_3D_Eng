@@ -6,6 +6,7 @@
 #include "Other/Debug.hpp"
 #include "Window/Events.hpp"
 #include "glm/ext/vector_float3.hpp"
+#include <string>
 
 int LoopEngine::Application::Start() {
   Window Window(1280, 720, "The Game");
@@ -30,50 +31,47 @@ int LoopEngine::Application::Start() {
   Camera cam({0.0f, 0.0f, 3.0f}, 60.0f, "cam1");
 
   while (!Window.IsClose()) {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (Events::justPressed(GLFW_KEY_TAB)) {
       Window.SetCursorLocked(!Events::_cursor_locked);
     }
 
-    // Cube Rotation
-    if (Events::isPressing(GLFW_KEY_RIGHT)) {
-      mesh1.GetTransform().DeltaRotateTo(glm::vec3(0.0f, 90.0f, 0.0f) *
-                                         Events::deltaTime);
+    // Camera Rotation
+    if (Events::_cursor_locked) {
+      cam.GetTransform().DeltaRotateTo(
+          glm::vec3(-Events::dY, -Events::dX, 0.0f) * cam.GetSens());
     }
-    if (Events::isPressing(GLFW_KEY_LEFT)) {
-      mesh1.GetTransform().DeltaRotateTo(glm::vec3(0.0f, -90.0f, 0.0f) *
-                                         Events::deltaTime);
-    }
-
-    // Camera Movement
-    if (Events::isPressing(GLFW_KEY_W)) {
-      cam.GetTransform().DeltaMoveTo(glm::vec3(0.0f, 0.0f, -1.0f) *
-                                     Events::deltaTime);
-    }
-    if (Events::isPressing(GLFW_KEY_S)) {
-      cam.GetTransform().DeltaMoveTo(glm::vec3(0.0f, 0.0f, 1.0f) *
-                                     Events::deltaTime);
-    }
-    if (Events::isPressing(GLFW_KEY_A)) {
-      cam.GetTransform().DeltaMoveTo(glm::vec3(-1.0f, 0.0f, 0.0f) *
-                                     Events::deltaTime);
-    }
-    if (Events::isPressing(GLFW_KEY_D)) {
-      cam.GetTransform().DeltaMoveTo(glm::vec3(1.0f, 0.0f, 0.0f) *
-                                     Events::deltaTime);
-    }
-
-    cam.GetTransform().DeltaRotateTo(glm::vec3(-Events::dY, -Events::dX, 0.0f) *
-                                     cam.GetSens() * Events::deltaTime);
-
-    // Draw Mesh as Solid
-    mesh1.DrawAsSolid();
-
-    // Update cam rotation matrix
     if (cam.GetTransform().IsRotationChanged()) {
       cam.UpdateVectors();
     }
+
+    // Camera Movement
+    float moveSpeed = 3.0f;
+    glm::vec3 moveDirection = glm::vec3(0.0f);
+
+    if (Events::isPressing(GLFW_KEY_W)) {
+      moveDirection += cam.GetFront();
+    }
+    if (Events::isPressing(GLFW_KEY_S)) {
+      moveDirection -= cam.GetFront();
+    }
+    if (Events::isPressing(GLFW_KEY_A)) {
+      moveDirection -= cam.GetRight();
+    }
+    if (Events::isPressing(GLFW_KEY_D)) {
+      moveDirection += cam.GetRight();
+    }
+
+    if (glm::length(moveDirection) > 0.0f) {
+      moveDirection = glm::normalize(moveDirection);
+      cam.GetTransform().DeltaMoveTo(moveDirection * moveSpeed *
+                                     Events::deltaTime);
+    }
+
+    // Draw Mesh as Solid
+    mesh1.DrawAsSolid();
 
     Window.SwapBuf();
     Events::PollEvents();
