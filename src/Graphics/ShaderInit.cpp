@@ -270,13 +270,20 @@ void LoopEngine::Shader::SetMat4x4(const std::string &name, glm::mat4x4 mat) {
   glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-void LoopEngine::Shader::SetVec3(const std::string &name, glm::vec3 &value) {
-  uint location = glGetUniformLocation(id, name.c_str());
+void LoopEngine::Shader::SetVec3(const std::string &name,
+                                 const glm::vec3 &value) {
+  int location = glGetUniformLocation(id, name.c_str());
   glUniform3f(location, value.x, value.y, value.z);
 }
-void LoopEngine::Shader::SetVec4(const std::string &name, glm::vec4 &value) {
-  uint location = glGetUniformLocation(id, name.c_str());
+void LoopEngine::Shader::SetVec4(const std::string &name,
+                                 const glm::vec4 &value) {
+  int location = glGetUniformLocation(id, name.c_str());
   glUniform4f(location, value.x, value.y, value.z, value.w);
+}
+
+void LoopEngine::Shader::SetInt(const std::string &name, int value) {
+  int location = glGetUniformLocation(id, name.c_str());
+  glUniform1i(location, value);
 }
 
 // Shader Use
@@ -324,25 +331,62 @@ LoopEngine::Shadow::Shadow() {
 }
 
 // Light Constructor
-LoopEngine::Light::Light(glm::vec3 position, Shadow *shadow)
-    : lightPos(position), shadow(shadow) {
+LoopEngine::Light::Light(glm::vec3 position, Shadow *shadow) : shadow(shadow) {
 
-  depthShader = Shader::LoadShader("assets/Shaders/shadow_depth.frag",
-                                   "assets/Shaders/shadow_depth.vert", "Depth");
+  lightProjection =
+      glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, nearPlane, farPlane);
+
+  transform.MoveTo(position);
+
+  lightView = glm::lookAt(transform.GetPosition(), glm::vec3(0.0f, 0.0f, 0.0f),
+                          glm::vec3(0.0f, 1.0f, 0.0f));
+
+  lightSpaceMatrix = lightProjection * lightView;
+
+  // ВАЖНО: сначала vertex, потом fragment
+  depthShader = Shader::LoadShader("assets/Shaders/shadow_depth.vert",
+                                   "assets/Shaders/shadow_depth.frag", "Depth");
+}
+
+// Depth Rendering (Light)
+void LoopEngine::Light::RenderDepth() {
+  if (shadow == nullptr || depthShader == nullptr) {
+    return;
+  }
 
   glViewport(0, 0, shadow->SHADOW_WIDTH, shadow->SHADOW_HEIGHT);
   glBindFramebuffer(GL_FRAMEBUFFER, shadow->depthMapFBO);
   glClear(GL_DEPTH_BUFFER_BIT);
 
+  depthShader->Use();
   depthShader->SetMat4x4("lightSpaceMatrix", lightSpaceMatrix);
 
-  // Рисуешь ВСЕ объекты, которые должны отбрасывать тень
   for (Mesh *mesh : Mesh::GetArray()) {
-    depthShader->SetMat4x4("model", mesh->GetTransform().GetMat());
-    mesh->DrawAsSolid();
+    if (mesh != nullptr) {
+      mesh->DrawDepth(depthShader);
+    }
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void LoopEngine::Light::ApplyToShader(Shader *shader, Camera *cam) {
+  if (shader == nullptr || shadow == nullptr) {
+    return;
+  }
+
+  shader->Use();
+
+  shader->SetMat4x4("lightSpaceMatrix", lightSpaceMatrix);
+  shader->SetVec3("lightPos", transform.GetPosition());
+
+  if (cam != nullptr) {
+    glm::vec3 viewPos = cam->GetTransform().GetPosition();
+    shader->SetVec3("viewPos", viewPos);
+  }
+
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, shadow->depthMap);
+  shader->SetInt("shadowMap", 0);
+}
 // --LIGHTNING INITIALIZATION

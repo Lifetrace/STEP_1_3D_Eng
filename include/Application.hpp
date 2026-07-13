@@ -1,11 +1,16 @@
 #pragma once
 
 #include "Graphics/GLINC.hpp"
-#include "Graphics/Buffers.hpp"
-#include "Graphics/Shader.hpp"
+
+#include "Graphics/Lightning/LightStr.hpp"
+#include "Graphics/Lightning/ShadowStr.hpp"
+#include "Graphics/Mesh.hpp"
+#include "Graphics/Texture.hpp"
+
+#include "Other/Camera.hpp"
 #include "Other/Debug.hpp"
+
 #include "Window/Events.hpp"
-#include "Window/Window.hpp"
 
 namespace LoopEngine {
 class Application {

@@ -23,7 +23,7 @@ class Mesh {
   Transform transform;
 
   static std::unordered_map<std::string, Mesh *> inline MeshList;
-  static std::vector<Mesh *> MeshArray;
+  static std::vector<Mesh *> inline MeshArray;
 
   PrimitiveType type;
 
@@ -63,6 +63,8 @@ public:
   Shader *GetShader() { return shader; }
 
   static std::vector<Mesh *> &GetArray() { return MeshArray; }
+
+  void DrawDepth(Shader *depthShader);
 
   void Create();
 

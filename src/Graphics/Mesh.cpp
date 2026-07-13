@@ -9,6 +9,7 @@
 LoopEngine::Mesh::Mesh(std::string name, Window *window)
     : name(name), window(window) {
   MeshList[name] = this;
+  MeshArray.push_back(this);
 }
 
 void LoopEngine::Mesh::Create() {
@@ -87,13 +88,13 @@ void LoopEngine::Mesh::UpdateTransform() {
     return;
   }
 
-  if (!transform.IsChanged()) {
-    return;
+  if (transform.IsChanged()) {
+    transform.Update();
   }
 
-  transform.Update();
-
-  shader->SetMat4x4("model", transform.GetMat());
+  if (shader != nullptr) {
+    shader->SetMat4x4("model", transform.GetMat());
+  }
 }
 
 // Transform methods init
@@ -114,4 +115,32 @@ void LoopEngine::Transform::Update() {
   model = glm::scale(model, this->GetScale());
 
   ResetChanged();
+}
+
+void LoopEngine::Mesh::DrawDepth(Shader *depthShader) {
+  if (!created) {
+    Debug::Error("Mesh (" + name + ") is not created!");
+    return;
+  }
+
+  if (depthShader == nullptr) {
+    Debug::Error("Mesh (" + name +
+                 ") cannot draw depth: depthShader is nullptr!");
+    return;
+  }
+
+  if (buffer == nullptr) {
+    Debug::Error("Mesh (" + name + ") buffer is nullptr!");
+    return;
+  }
+
+  depthShader->Use();
+
+  if (transform.IsChanged()) {
+    transform.Update();
+  }
+
+  depthShader->SetMat4x4("model", transform.GetMat());
+
+  buffer->DrawSolid();
 }

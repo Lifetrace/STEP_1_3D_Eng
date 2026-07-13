@@ -35,8 +35,10 @@ public:
 
   void SetMat4x4(const std::string &name, glm::mat4x4 mat);
 
-  void SetVec3(const std::string &name, glm::vec3 &vec);
-  void SetVec4(const std::string &name, glm::vec4 &vec);
+  void SetVec3(const std::string &name, const glm::vec3 &value);
+  void SetVec4(const std::string &name, const glm::vec4 &value);
+
+  void SetInt(const std::string &name, int value);
 
   static Shader *LoadShader(std::string V_source, std::string F_source,
                             std::string G_source, std::string name);
