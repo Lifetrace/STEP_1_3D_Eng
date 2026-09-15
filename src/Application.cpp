@@ -95,7 +95,7 @@ int LoopEngine::Application::Start() {
     light.ApplyToShader(BasicShader, &cam);
 
     light.GetTransform().MoveTo(light.GetTransform().GetPosition() +
-                                glm::vec3(sin(Events::time)*0.1f, 0.0f, 0.0f));
+                                glm::vec3(sin(Events::time), 0.0f, 0.0f) * Events::deltaTime);
 
     meshLight.DrawAsSolid();
     meshLight.GetTransform().MoveTo(light.GetTransform().GetPosition() +

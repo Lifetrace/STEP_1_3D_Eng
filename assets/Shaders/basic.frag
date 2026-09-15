@@ -67,7 +67,6 @@ void main()
     vec3 diffuse = diff * color;
 
     float shadow = ShadowCalculation(FragPosLightSpace, normal, lightDir);
-
     vec3 result = ambient + (1.0 - shadow) * diffuse;
 
     FragColor = vec4(result, VertColor.a);
